@@ -78,7 +78,8 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
-    <div className="form-widget">
+    <div className="container">
+        <div className="form-widget">
       <Avatar
         uid={user!.id}
         url={avatar_url}
@@ -127,5 +128,7 @@ export default function Account({ session }: { session: Session }) {
         </button>
       </div>
     </div>
+    </div>
+    
   )
 }

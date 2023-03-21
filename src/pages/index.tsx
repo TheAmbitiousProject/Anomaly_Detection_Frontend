@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import LandingPage from './landingPage'
+import Admin from './admin_dashboard/admin'
+import ListRouter from './admin_dashboard/dummy'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,9 +17,31 @@ export default function Index() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <LandingPage/>
+      <main className={styles.main} style={{height:'100vh', display:'flex', alignItems:'center'}}>
+        {/* <LandingPage/> */}
+        <Admin/>
+        {/* <ListRouter/> */}
       </main>
     </>
   )
 }
+
+/*
+// map
+import React from "react";
+import dynamic from "next/dynamic";
+
+export default function Home() {
+  const MapWithNoSSR = dynamic(() => import("../pages/admin_dashboard/Map"), {
+    ssr: false
+  });
+
+  return (
+    <main>
+      <div id="map">
+        <MapWithNoSSR />
+      </div>
+    </main>
+  );
+}
+*/

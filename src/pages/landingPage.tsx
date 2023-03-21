@@ -5,6 +5,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Account from '../components/Account'
 import Footer from '../components/Footer'
 import { height } from '@mui/system'
+import HomePage from './homePage'
 
 const LandingPage: NextPage = () => {
   const session = useSession()
@@ -26,7 +27,8 @@ const LandingPage: NextPage = () => {
         </div>
       ) : (
         <>
-          <Account session={session} />
+          {/* <Account session={session} /> */}
+          <HomePage session={session} />
         </>
       )}
 
