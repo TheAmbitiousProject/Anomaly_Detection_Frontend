@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import LandingPage from './landingPage'
-import Admin from './admin_dashboard/admin'
+import Admin from './admin'
 import ListRouter from './admin_dashboard/dummy'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,9 +17,9 @@ export default function Index() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main} style={{height:'100vh', display:'flex', alignItems:'center'}}>
-        {/* <LandingPage/> */}
-        <Admin/>
+      <main className={styles.main} style={{height:'100vh', width:'100vw', display:'flex', alignItems:'center'}}>
+        <LandingPage/>
+        {/* <Admin/> */}
         {/* <ListRouter/> */}
       </main>
     </>

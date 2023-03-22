@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useUser, useSupabaseClient, Session } from '@supabase/auth-helpers-react'
-import Avatar from './Avatar'
+import { useUser, useSupabaseClient, Session, useSession } from '@supabase/auth-helpers-react'
+import Avatar from '../components/Avatar'
 
 import { Database } from '../utils/database.types'
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
-export default function Account({ session }: { session: Session }) {
+export default function Account(){
+  const session = useSession()
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
   const [loading, setLoading] = useState(true)

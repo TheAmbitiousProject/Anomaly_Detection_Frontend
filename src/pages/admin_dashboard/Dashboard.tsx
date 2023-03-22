@@ -98,7 +98,7 @@ function DashboardContent() {
 
   return (
     <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', width:'100%' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
           <Toolbar

@@ -2,15 +2,16 @@ import type { NextPage } from 'next'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
-import Account from '../components/Account'
+import Account from './account'
 import Footer from '../components/Footer'
 import { height } from '@mui/system'
 import HomePage from './homePage'
+import { useRouter } from 'next/router'
 
 const LandingPage: NextPage = () => {
   const session = useSession()
   const supabase = useSupabaseClient()
-
+  
   return (
     <div className="container">
       {!session ? (

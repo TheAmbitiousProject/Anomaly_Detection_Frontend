@@ -5,8 +5,9 @@ import "leaflet-defaulticon-compatibility";
 import { height, width } from "@mui/system";
 import { usePapaParse } from 'react-papaparse';
 
-/*
+// /*
 function heatMap(){
+  /*
   var map = L.map('map', {
     zoomControl: false, // Add zoom control separately below
     center: [43.679882,-79.544266],
@@ -16,7 +17,7 @@ function heatMap(){
     // max: 1,
     // gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'}
   })
-
+*/
   $.get('./house_sales_ontario.csv', function(csvString) {
     var data = Papa.parse(csvString.trim()).data.map((a) => {
       return [ parseFloat(a[4]), parseFloat(a[5]), parseFloat(a[3])/325000 ];
@@ -29,7 +30,8 @@ function heatMap(){
     heat.addTo(map)
     })
 }
-*/
+// */
+/*
 export default function ReadString() {
   const { readString } = usePapaParse();
   console.log("reads")
@@ -49,8 +51,8 @@ export default function ReadString() {
 
   return <button onClick={() => handleReadString()}>readString</button>;
 }
-
-/*
+*/
+// /*
 const Map = () => {
     
   return (
@@ -69,11 +71,11 @@ const Map = () => {
         <Popup>Hey!!</Popup>
       </Marker>
     </MapContainer>
-    <button onClick={() => ReadString()}>Read S</button>
+    {/* <button onClick={() => ReadString()}>Read S</button> */}
     </div>
     
   );
 };
 
 export default Map;
-*/
+// */

@@ -1,22 +1,26 @@
 import { Session } from '@supabase/auth-helpers-react'
-import Account from '@/components/Account'
-import Admin from './admin_dashboard/admin'
+import Account from '@/pages/account'
+import Admin from './admin'
+import { useRouter } from 'next/router'
 
 function callAdmin () { 
     console.log("callAdmin")
     return(
         <div className="admin">
             <h1 className='text-white' style={{color: 'white'}}>hey</h1>
-            <Admin/>
+            {/* <Admin/> */}
         </div>
 ) };
 
+
+
 export default function HomePage({ session }: { session: Session }) {
-    
+    const router = useRouter()
+
     return(
         <div className="container">
-            <button onClick={() => Account({session})}>Account</button>
-            <button onClick={() => callAdmin()}>Admin</button>
+            <button onClick={() => router.push('/admin')}>Account</button>
+            <button onClick={() => router.push('/admin')}>Admin</button>
         </div>        
     )
 }
