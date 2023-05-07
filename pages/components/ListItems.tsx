@@ -6,10 +6,10 @@ import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import BrowseGalleryIcon from '@mui/icons-material/BrowseGallery';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import Link from '@mui/material/Link';
 
 export const mainListItems = (
@@ -27,6 +27,15 @@ export const mainListItems = (
           <BrowseGalleryIcon/>
         </ListItemIcon>
         <ListItemText className='text-#334155' primary="Alerts" />
+      </ListItemButton>
+    </Link>
+
+    <Link href='./assignments' underline='none' color='#334155'>
+      <ListItemButton>
+        <ListItemIcon>
+          <AssignmentIcon/>
+        </ListItemIcon>
+        <ListItemText className='text-#334155' primary="Assignments" />
       </ListItemButton>
     </Link>
 

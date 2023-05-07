@@ -12,9 +12,10 @@ export default function Cameras() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [update, setUpdate] = useState(false);
+  const [create, setCreate] = useState(false);
  
   useEffect(() => {
-    setInterval(async () => {
+    // setInterval(async () => {
       const fetchCameras = async () => {
         try {
           const { data: cameras, error } = await supabase
@@ -34,8 +35,9 @@ export default function Cameras() {
   
       fetchCameras();
       console.log(cameras)
-    }, 1000);
-  }, [cameras]);
+    // }, 1000);
+  },[]);
+  // }, [cameras]);
 
   async function deleteCamera(id: string) {
     const { error } = await supabase.from('cameras').delete().match({ id });
@@ -58,15 +60,6 @@ export default function Cameras() {
       </>
     );
   }
-  // const router = useRouter();
-
-function handleUpdate() {
-    // router.push({
-    //     pathname: '/update',
-    //     query: { id },
-    //   });
-    setUpdate(true);
-}
 
 //didnt work: supabase realtime
 /*
@@ -113,35 +106,39 @@ const { data: messages, realtimeError } = supabase.from('cameras')
             <Navbar/>
         </div>
         <div className="basis-4/5 p-10">
-            <div className="topbar h-15 m-5">
-                 {/* <a href="./crud_camera" className="button">Add Camera</a> */}
-                 <button onClick={() => {
-                    <Create/>
-                }}>Add Camera</button>
-                
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cameras.map((camera) => (
-            <div
-                key={camera.id}
-                className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
-            >
-                <h3 className="text-lg text-black font-semibold my-2">Camera Id: {camera.id}</h3>
-                <p className="text-black">{camera.camera_description}</p>
-                {/* <p className="text-black">Coordinates:  {camera.coordinates.latitude}, {camera.coordinates.longitude}</p> */}
-                <p className="text-black">Frame Rate: {camera.frame_rate}</p>
-                <div className="flex m-2 w-4/5 justify-around">
-                <button onClick={() => deleteCamera(camera.id)}>Delete</button>
-                <button onClick={() => {handleUpdate}
-                }>Update</button>
+            {!create && 
+              <button className="topbar h-15 m-5" onClick={() => {
+                console.log('to create')
+                  setCreate(true)
+              }}>Add Camera</button>
+            }
+                {create && <Create/>}
+              {!create && 
+                <div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cameras.map((camera) => (
+                      <div
+                          key={camera.id}
+                          className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
+                      >
+                          <h3 className="text-lg text-black font-semibold my-2">Camera Id: {camera.id}</h3>
+                          <p className="text-black">{camera.camera_description}</p>
+                          {/* <p className="text-black">Coordinates:  {camera.coordinates.latitude}, {camera.coordinates.longitude}</p> */}
+                          <p className="text-black">Frame Rate: {camera.frame_rate}</p>
+                          <div className="flex m-2 w-4/5 justify-around">
+                            <button onClick={() => deleteCamera(camera.id)}>Delete</button>
+                            <button onClick={() => {setUpdate(true)}
+                            }>Update</button>
 
-                {update && <Update id={camera.id}/>}
+                            {update && <Update id={camera.id}/>}
+                          </div>
+                          
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                
-            </div>
-            ))}
-            </div>
-            </div>
+              }  
+        </div>
     </div>
   );
 };

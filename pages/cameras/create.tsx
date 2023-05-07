@@ -56,7 +56,7 @@ export default function Create() {
   }
 
   return (
-    <div className='h-screen w-screen flex flex-col justify-center items-center'>
+    <div className='flex flex-col justify-center items-center'>
       <h1 className=' text-3xl'>Add Camera</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
