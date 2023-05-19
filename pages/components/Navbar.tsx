@@ -2,6 +2,8 @@ import { Drawer, Toolbar, IconButton, List, Divider, styled } from "@mui/materia
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './ListItems';
 import * as React from 'react'; 
+import { useUser } from "@supabase/auth-helpers-react";
+import { useEffect, useState } from "react";
 
 export default function Navbar(){
   /*
@@ -36,7 +38,27 @@ export default function Navbar(){
     const toggleDrawer = () => {
         setOpen(!open);
     };
+    const user= useUser();
+    const [isSignedIn, setIsSignedIn] = useState(false)
+
+
+    // useEffect(()=>{
+      /*
+      if(user == null) {
+        alert('Please sign in to view this page')
+          return {
+            redirect: {
+              destination: '/',
+              permanent: false,
+            },
+        }
+      }
+      else setIsSignedIn(true);
+      */
+    // },[user])
+
     return(
+      
         <div className="">
             <Drawer variant="permanent" open={open} >
           <Toolbar

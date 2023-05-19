@@ -19,7 +19,6 @@ export default function Create() {
     const { data, error } = await supabase
       .from('assignments')
       .insert({
-        id: id,
         alert_id: alertId,
         responder_id: responder,
       })
@@ -27,7 +26,7 @@ export default function Create() {
     if (error) console.log('error', error);
     else{
       setId('');
-    setSelectedResponder(null);
+    // setSelectedResponder(null);
     console.log('assignment insert success')
   }
 
@@ -37,7 +36,7 @@ export default function Create() {
       <h1 className=' text-3xl'>Add Camera</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
-        addCamera();
+        addAssignment();
       }} className='w-2/5'>
         <label>Id:</label>
         <input type="text" value={id} onChange={(e) => setId(e.target.value)} />

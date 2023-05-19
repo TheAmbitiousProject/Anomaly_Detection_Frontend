@@ -1,8 +1,5 @@
 import { useState, useEffect, Key } from 'react';
-import Select from 'react-select';
 import { supabase } from '../../utils/supabaseClient';
-import { Responder } from '../types/Responder';
-import { useRouter } from 'next/router';
 import { Assignment } from '../types/Assignment';
 import Navbar from '../components/Navbar';
 import { useUser} from '@supabase/auth-helpers-react'
@@ -10,7 +7,6 @@ import { useUser} from '@supabase/auth-helpers-react'
 
 export default function Assignments() {
   const [assignments, setAssignments] = useState< Assignment[]>([]);
-  const router = useRouter();
   const user = useUser()
 
   useEffect(() => {
@@ -18,32 +14,43 @@ export default function Assignments() {
         const { data, error } = await supabase
           .from<Assignment>('assignments')
           .select("*");
-
         if (error) throw error;
-
         setAssignments(data);
     };
 
     fetchAssignments();
   }, []);
 
-  async function handleAccept(alertId:any) {
+  async function deleteAlert(assignmentId: string) {
+    const { error } = await supabase.from('assignments').delete().eq('id', assignmentId)
+    if (error) console.log('error', error);
+    else {
+      const updatedAssignments = assignments.filter((assignment) => assignment.id !== assignmentId);
+      setAssignments(updatedAssignments);
+    }
+  }
+
+  async function handleAccept(alertId:string, assignmentId: string) {
     console.log('in accept')
         const { error } = await supabase
         .from('alerts')
-        .update({ isAccepted: true, responder_id: user.id })
-        .eq('id', alertId)
+        .update({ isAccepted: true, 
+          responder_id: user.id, sentRequest: null  
+        })
+        .eq('id', (alertId))
 
         if (error) throw error;
+        else deleteAlert(assignmentId)
 
   }
-  async function handleDeny(alertId:any) {
+  async function handleDeny(alertId:any, assignmentId: string) {
       const { error } = await supabase
-      .from('alerts')
-      .update({ isAccepted: false })
+      .from('alerts') 
+      .update({ isAccepted: false, responder_id: null, sentRequest: null })
       .eq('id', alertId)
 
       if (error) throw error;
+      else deleteAlert(assignmentId)
   }
 
 
@@ -68,9 +75,9 @@ export default function Assignments() {
                 <h3 className="text-black">Assignment Id: {assignment.id}</h3>
               
                 <div className="flex m-2 w-4/5 justify-around">
-                <button onClick={() => handleAccept(assignment.id)}>Accept</button>
-                <button onClick={() => {handleDeny(assignment.id)}}>Deny</button>
-                </div>
+                <button onClick={() => handleAccept(assignment.alert_id, assignment.id)}>Accept</button>
+                <button onClick={() => {handleDeny(assignment.alert_id, assignment.id)}}>Deny</button>
+                </div> 
                 
             </div>
             ))}

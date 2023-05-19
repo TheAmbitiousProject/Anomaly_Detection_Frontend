@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 
 export default function Create() {
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [id, setId] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [longitude, setLongitude] = useState<number>();
   const [latitude, setLatitude] = useState<number>();
@@ -40,21 +39,6 @@ export default function Create() {
     // else setCameras([...cameras, data]);
   }
 
-  async function updateCamera(id: string, updates: Partial<Camera>) {
-    const { data, error } = await supabase
-      .from('cameras')
-      .update(updates)
-      .match({ id })
-      .single();
-    if (error) console.log('error', error);
-    else {
-      const updatedCameras = cameras.map((camera) =>
-        camera.id === data.id ? { ...camera, ...data } : camera
-      );
-      setCameras(updatedCameras);
-    }
-  }
-
   return (
     <div className='flex flex-col justify-center items-center'>
       <h1 className=' text-3xl'>Add Camera</h1>
@@ -62,8 +46,6 @@ export default function Create() {
         e.preventDefault();
         addCamera();
       }} className='w-2/5'>
-        <label>Id:</label>
-        <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
         <label>Description:</label>
         <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
         <label>Longitude:</label>

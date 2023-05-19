@@ -4,12 +4,13 @@ import Navbar from "../components/Navbar";
 import { Alert } from '../types/Alert';
 import Create from "./create";
 import Update from "./update";
-import ResponderAssignForm from "../assignments";
+import { Assignment } from '../types/Assignment';
 import Select from 'react-select';
 import { Responder } from '../types/Responder';
 
 export default function Alerts(){
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [assignments, setAssignments] = useState< Assignment[]>([]);
   const [id, setId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -125,11 +126,27 @@ async function fetchAnomaly(anomalyId: string) {
     label: responder.id,
   }));
 
+  async function sentAssignment(alertId: string){
+    const { data, error } = await supabase
+    .from<Assignment>('assignments')
+    .select("*").eq('alert_id', alertId);
+      if (error) return true;
+      // setAssignments(data);
+  
+     return false
+  }
+
   async function addAssignment(responder: any, alertId: string, id: string) {
+
+    if(await sentAssignment(alertId)){
+      alert('An unaccepted/undenied request has been already sent for this Alert!!')
+      setId('');
+      return null
+    }
+    
     const { data, error } = await supabase
       .from('assignments')
       .insert({
-        id: id,
         alert_id: alertId,
         responder_id: responder,
       })
@@ -139,65 +156,69 @@ async function fetchAnomaly(anomalyId: string) {
       setId('');
     setSelectedResponder(null);
     console.log('assignment insert success')
+        alert('assignment insert success')
   }
   }
 
 
   return (
     <div className="h-screen w-screeen flex justify-center">
-        <div className="basis-1/5">
-            <Navbar/>
-        </div>
-        <div className="basis-4/5 p-10">
-            <div className="topbar h-15 m-5">
-                 <button onClick={() => {
-                  console.log('to create')
-                    setCreate(true)
-                }}>Add alert</button>
-                {create && <Create/>}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* {console.log('alerts in return: ', alerts)} */}
-                {alerts.map((alert) => (
-                    <div
-                        key={alert.id}
-                        className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
-                    >
-                        <h3 className="text-lg text-black font-semibold my-2">Alert ID: {alert.id}</h3>
-                        {/* <p className="text-black">anomaly class: {alert.anomaly}</p> */}
-                        <p className="text-black">anomaly ID: {alert.anomaly_id}</p>
-                        {(alert.responder_id != null) && 
-                          <>
-                          
-                            {/* <p className="text-black">responder: {fetchResponder(alert)
-                            .then(username => <span>{username}, </span>)}</p> */}
-                            <p className="text-black">responder ID: {alert.responder_id}</p>
-                          </>
-                        }
-                        {(alert.responder_id == null) && 
-                        <div className="m-2 h-32 flex flex-col justify-around">
-                          <label>Assignment Id:</label>
-                            <input type="text" className='w-20' value={id} onChange={(e) => setId(e.target.value)} />
-                            <Select
-                              id="Responder-select"
-                              options={options}
-                              onChange={(option) => {
-                                const responder = responders.find((responder) => responder.id === option?.value) ?? undefined;
-                                setSelectedResponder(responder?.id);
-                              }}
-                              placeholder='Select a Responder: '
-                              className='text-black'
-                            />
-                        </div>}
-                        <div className="flex m-2 w-4/5 justify-around">
-                        <button onClick={() => deleteAlert(alert.id)}>Delete</button>
-                        {(alert.responder_id == null) && <button onClick={() => addAssignment(selectedResponder, alert.id, id)}>Assign Responder</button>}
-                        </div>
+      <div className="basis-1/5">
+          <Navbar/>
+      </div>
+      <div className="basis-4/5 p-10">
+        {!create && 
+              <button className="topbar h-15 m-5" onClick={() => {
+                console.log('to create')
+                  setCreate(true)
+              }}>Add Alert</button>
+        }
+        {create && <Create/>}
+        {!create &&
+          <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* {console.log('alerts in return: ', alerts)} */}
+              {alerts.map((alert) => (
+                  <div
+                      key={alert.id}
+                      className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
+                  >
+                      <h3 className="text-lg text-black font-semibold my-2">Alert ID: {alert.id}</h3>
+                      {/* <p className="text-black">anomaly class: {alert.anomaly}</p> */}
+                      <p className="text-black">anomaly ID: {alert.anomaly_id}</p>
+                      {(alert.responder_id != null) && 
+                        <>
                         
-                    </div>
-                ))}
-            </div>
+                          {/* <p className="text-black">responder: {fetchResponder(alert)
+                          .then(username => <span>{username}, </span>)}</p> */}
+                          <p className="text-black">responder ID: {alert.responder_id}</p>
+                        </>
+                      }
+                      {(alert.responder_id == null) && 
+                      <div className="m-2 flex flex-col justify-around">
+        
+                          <Select
+                            id="Responder-select"
+                            options={options}
+                            onChange={(option) => {
+                              const responder = responders.find((responder) => responder.id === option?.value) ?? undefined;
+                              setSelectedResponder(responder?.id);
+                            }}
+                            placeholder='Select a Responder: '
+                            className='text-black'
+                          />
+                      </div>}
+                      <div className="flex m-2 w-4/5 justify-around">
+                      <button onClick={() => deleteAlert(alert.id)}>Delete</button>
+                      {(alert.responder_id == null) && <button onClick={() => addAssignment(selectedResponder, alert.id, id)}>Assign Responder</button>}
+                      </div>
+                      
+                  </div>
+              ))}
           </div>
+          </div>
+        }
+      </div>
     </div>
   );
 };

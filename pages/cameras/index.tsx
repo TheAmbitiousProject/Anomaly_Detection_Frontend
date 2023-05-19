@@ -34,13 +34,13 @@ export default function Cameras() {
       };
   
       fetchCameras();
-      console.log(cameras)
-    // }, 1000);
+      console.log(cameras) 
+    // }, 3000);
   },[]);
   // }, [cameras]);
 
   async function deleteCamera(id: string) {
-    const { error } = await supabase.from('cameras').delete().match({ id });
+    const { error } = await supabase.from('cameras').delete().eq('id', id)
     if (error) console.log('error', error);
     else {
       const updatedCameras = cameras.filter((camera) => camera.id !== id);
@@ -100,20 +100,26 @@ const { data: messages, realtimeError } = supabase.from('cameras')
   }, []);
 */
 
+  function handleUpdate(cameraId: string){
+    console.log('in update');
+    <Update id={cameraId}/>
+    {console.log('in update 20');}
+  }
+
   return (
     <div className="h-screen w-screeen flex justify-center">
         <div className="basis-1/5">
             <Navbar/>
         </div>
         <div className="basis-4/5 p-10">
-            {!create && 
+            {(!create ) && 
               <button className="topbar h-15 m-5" onClick={() => {
                 console.log('to create')
                   setCreate(true)
               }}>Add Camera</button>
             }
                 {create && <Create/>}
-              {!create && 
+              {(!create ) && 
                 <div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cameras.map((camera) => (
@@ -127,10 +133,10 @@ const { data: messages, realtimeError } = supabase.from('cameras')
                           <p className="text-black">Frame Rate: {camera.frame_rate}</p>
                           <div className="flex m-2 w-4/5 justify-around">
                             <button onClick={() => deleteCamera(camera.id)}>Delete</button>
-                            <button onClick={() => {setUpdate(true)}
+                            <button onClick={() => {handleUpdate(camera.id)}
                             }>Update</button>
 
-                            {update && <Update id={camera.id}/>}
+                            {/* {update && } */}
                           </div>
                           
                       </div>

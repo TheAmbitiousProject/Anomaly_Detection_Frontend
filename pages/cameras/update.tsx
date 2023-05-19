@@ -3,10 +3,10 @@ import { Camera } from '../types/Camera';
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
 
-export default function Update( oldId: {id}) {
+export default function Update( oldId: any) {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [id, setId] = useState<string>('');
-  const [description, setDescription] = useState<string>(data.camera_description);
+  const [description, setDescription] = useState<string>();
   const [longitude, setLongitude] = useState<number>();
   const [latitude, setLatitude] = useState<number>();
   const [framerate, setFramerate] = useState<number>();
@@ -31,11 +31,12 @@ export default function Update( oldId: {id}) {
   }
 
   async function updateCamera(id: string, updates: Partial<Camera>) {
-    const { data, error } = await supabase
-      .from('cameras')
-      .update(updates)
-      .match({ id })
-      .single();
+    const { error } = await supabase
+        .from('cameras')
+        .update({ isAccepted: true, 
+          responder_id: user.id, sentRequest: null  
+        })
+        .eq('id', (alertId))
     if (error) console.log('error', error);
     else {
       const updatedCameras = cameras.map((camera) =>
@@ -46,12 +47,22 @@ export default function Update( oldId: {id}) {
     }
   }
 
+  async function deleteCamera(id: string) {
+    const { error } = await supabase.from('cameras').update().eq('id', id)
+    if (error) console.log('error', error);
+    else {
+      const updatedCameras = cameras.filter((camera) => camera.id !== id);
+      setCameras(updatedCameras);
+    }
+  }
+  {console.log('in update 22');}
+
   return (
-    <div className='h-screen w-screen flex flex-col justify-center items-center'>
+    <div className='flex flex-col justify-center items-center'>
       <h1 className=' text-3xl'>Update Camera</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
-        addCamera();
+        updateCamera();
       }} className='w-2/5'>
         <label>Id:</label>
         <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
