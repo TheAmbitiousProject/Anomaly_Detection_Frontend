@@ -57,8 +57,8 @@ export default function Alerts(){
     fetchResponders();
     // mapAlerts() //commented due to errors
     console.log('alerts in useEffect: ', alerts);
-  }, []);
-// },[alerts]); //commented to prevent multiple re-rendering aka autoupdate of page with new info from db
+  // }, []);
+},[alerts]); //commented to prevent multiple re-rendering aka autoupdate of page with new info from db
 
 /*
 //finds the responder and anomaly names for each alert

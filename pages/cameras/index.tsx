@@ -36,8 +36,8 @@ export default function Cameras() {
       fetchCameras();
       console.log(cameras) 
     // }, 3000);
-  },[]);
-  // }, [cameras]);
+  // },[]);
+  }, [cameras]);
 
   async function deleteCamera(id: string) {
     const { error } = await supabase.from('cameras').delete().eq('id', id)
