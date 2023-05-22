@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../utils/supabaseClient";
-import Navbar from "../components/Navbar";
-import { Responder } from '../types/Responder'; 
+import { useEffect, useState } from "react";
+
 import Create from "./create";
+import Navbar from "../components/Navbar";
+import { Responder } from '../types/Responder';
 import Update from "./update";
+import { supabase } from "../../utils/supabaseClient";
+import { timer_duration } from "@/constants";
+
 // import { useRouter } from 'next/router';
 
 
@@ -29,8 +32,21 @@ const Responders = () => {
         setError(error.message);
       }
     };
-
     fetchResponders();
+    const timer = setInterval( ()=>{
+      console.log(`this runs every ${timer_duration} sec`)
+      fetchResponders();
+    },timer_duration)
+
+    
+
+    return ()=>{
+      clearInterval(timer)
+    }
+    
+    
+
+   
   }, []);
 
   async function deleteCamera(id: string) {

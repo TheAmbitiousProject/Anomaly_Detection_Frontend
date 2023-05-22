@@ -1,9 +1,10 @@
-import { useState, useEffect, Key } from 'react';
-import { supabase } from '../../utils/supabaseClient';
+import { Key, useEffect, useState } from 'react';
+
 import { Assignment } from '../types/Assignment';
 import Navbar from '../components/Navbar';
-import { useUser} from '@supabase/auth-helpers-react'
-
+import { supabase } from '../../utils/supabaseClient';
+import { timer_duration } from "@/constants";
+import { useUser } from '@supabase/auth-helpers-react';
 
 export default function Assignments() {
   const [assignments, setAssignments] = useState< Assignment[]>([]);
@@ -17,8 +18,19 @@ export default function Assignments() {
         if (error) throw error;
         setAssignments(data);
     };
-
     fetchAssignments();
+    const timer = setInterval( ()=>{
+      console.log(`this runs every ${timer_duration} sec`)
+      fetchAssignments();
+    },timer_duration)
+
+    
+
+    return ()=>{
+      clearInterval(timer)
+    }
+    
+   
   }, []);
 
   async function deleteAlert(assignmentId: string) {

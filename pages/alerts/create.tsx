@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { Alert } from '../types/Alert';
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
-import { Alert } from '../types/Alert';
 
 export default function Create() {
   const [anomalyId, setAnomalyId] = useState<string>('');
@@ -14,7 +15,8 @@ export default function Create() {
 
   async function sentRequest(id: string){
     const { data, error } = await supabase
-    .from<Alert>('alerts')
+    //
+    .from('alerts')
     .select("*")
     .eq('anomaly_id', id);
       if (error){
@@ -49,7 +51,7 @@ export default function Create() {
         <label>Anomaly Id:</label>
         <input type="text" value={anomalyId} onChange={(e) => setAnomalyId(e.target.value)} />         
         <label>Responder Id:</label>
-        <input type="text" value={responderId} onChange={(e) => setResponderId(e.target.value)} />
+        <input type="text" value={responderId||''} onChange={(e) => setResponderId(e.target.value)} />
         <button type="submit" className='m-5'>Add Alert</button>
       </form>
     </div>

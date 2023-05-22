@@ -1,6 +1,6 @@
+import Map from "./components/Map";
 import Navbar from "./components/Navbar"
 import dynamic from "next/dynamic";
-import Map from "./components/Map";
 import { padding } from "@mui/system";
 
 export default function Reports(){

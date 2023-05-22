@@ -1,29 +1,39 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../utils/supabaseClient";
-import Navbar from "../components/Navbar";
+import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from "react";
+
 import { Alert } from '../types/Alert';
-import Create from "./create";
-import Update from "./update";
 import { Assignment } from '../types/Assignment';
-import Select from 'react-select';
+import Create from "./create";
+import Navbar from "../components/Navbar";
 import { Responder } from '../types/Responder';
+import Select from 'react-select';
+import Update from "./update";
+import { supabase } from "../../utils/supabaseClient";
+import { timer_duration } from "@/constants";
 
 export default function Alerts(){
-  const [alerts, setAlerts] = useState<Alert[]>([]);
+  //const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [alerts, setAlerts] = useState<any>([]);
   const [assignments, setAssignments] = useState< Assignment[]>([]);
   const [id, setId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [responders, setResponders] = useState<Responder[]>([]);
+  //const [responders, setResponders] = useState<Responder[]>([]);
+  const [responders, setResponders] = useState<any>([]);
   const [selectedResponder, setSelectedResponder] = useState<String|undefined|null>('');
+  const [initialRunState, setinitialRunState] = useState()
  
   useEffect(() => {
+
+    console.log('alerts in useEffect: ', alerts);
+    // mapAlerts() //commented due to errors
+   
+    
     const fetchAlerts = async () => {
       try {
         const { data, error } = await supabase
-          .from<Alert>("alerts")
+          .from("alerts")
           .select("*");
 
         if (error) throw error;
@@ -42,7 +52,7 @@ export default function Alerts(){
     const fetchResponders = async () => {
       try {
         const { data, error } = await supabase
-          .from<Responder>('profiles')
+          .from('profiles')
           .select("*");
 
         if (error) throw error;
@@ -52,13 +62,21 @@ export default function Alerts(){
         console.log(error);
       }
     };
-
     fetchAlerts()
     fetchResponders();
-    // mapAlerts() //commented due to errors
-    console.log('alerts in useEffect: ', alerts);
+    const timer = setInterval( ()=>{
+      console.log(`this runs every ${timer_duration} sec`)
+      fetchAlerts()
+      fetchResponders();
+    },timer_duration)
+
+    
+
+    return ()=>{
+      clearInterval(timer)
+    }
   // }, []);
-},[alerts]); //commented to prevent multiple re-rendering aka autoupdate of page with new info from db
+},[]); //commented to prevent multiple re-rendering aka autoupdate of page with new info from db
 
 /*
 //finds the responder and anomaly names for each alert
@@ -103,7 +121,7 @@ async function fetchAnomaly(anomalyId: string) {
     const { error } = await supabase.from('alerts').delete().match({ id });
     if (error) console.log('error', error);
     else {
-      const updatedalerts = alerts.filter((alert) => alert.id !== id);
+      const updatedalerts = alerts.filter((alert: { id: string; }) => alert.id !== id);
       setAlerts(updatedalerts);
     }
   }
@@ -121,14 +139,14 @@ async function fetchAnomaly(anomalyId: string) {
     );
   }
 
-  const options: { value: string; label: string }[] = responders.map((responder) => ({
+  const options: { value: string; label: string }[] = responders.map((responder: { id: any; }) => ({
     value: responder.id,
-    label: responder.id,
+    label: responder.full_name,
   }));
 
   async function sentAssignment(alertId: string){
     const { data, error } = await supabase
-    .from<Assignment>('assignments')
+    .from('assignments')
     .select("*").eq('alert_id', alertId);
       if (error) return true;
       // setAssignments(data);
@@ -178,11 +196,12 @@ async function fetchAnomaly(anomalyId: string) {
           <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* {console.log('alerts in return: ', alerts)} */}
-              {alerts.map((alert) => (
+              {alerts.map((alert: { id: boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | Key | null | undefined; anomaly_id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; responder_id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | null | undefined; }) => (
                   <div
-                      key={alert.id}
+                      key={alert?.id}
                       className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
                   >
+                    {console.log("Hello from the other side")}
                       <h3 className="text-lg text-black font-semibold my-2">Alert ID: {alert.id}</h3>
                       {/* <p className="text-black">anomaly class: {alert.anomaly}</p> */}
                       <p className="text-black">anomaly ID: {alert.anomaly_id}</p>
@@ -201,7 +220,7 @@ async function fetchAnomaly(anomalyId: string) {
                             id="Responder-select"
                             options={options}
                             onChange={(option) => {
-                              const responder = responders.find((responder) => responder.id === option?.value) ?? undefined;
+                              const responder = responders.find((responder: { id: string | undefined; }) => responder.id === option?.value) ?? undefined;
                               setSelectedResponder(responder?.id);
                             }}
                             placeholder='Select a Responder: '

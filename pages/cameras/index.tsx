@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../utils/supabaseClient";
-import Navbar from "../components/Navbar";
-import { Camera } from '../types/Camera'; 
-import Create from "./create";
-import Update from "./update";
-// import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
 
+import { Camera } from '../types/Camera';
+import Create from "./create";
+import Navbar from "../components/Navbar";
+import Update from "./update";
+import { supabase } from "../../utils/supabaseClient";
+// import { useRouter } from 'next/router';
+import { timer_duration } from "@/constants";
 
 export default function Cameras() {
   const [cameras, setCameras] = useState<Camera[]>([]);
@@ -32,8 +33,20 @@ export default function Cameras() {
           setError(error.message);
         }
       };
-  
       fetchCameras();
+      const timer = setInterval( ()=>{
+        console.log(`this runs every ${timer_duration} sec`)
+        fetchCameras();
+      },timer_duration)
+  
+      
+  
+      return ()=>{
+        clearInterval(timer)
+      }
+      
+  
+      
       console.log(cameras) 
     // }, 3000);
   // },[]);
