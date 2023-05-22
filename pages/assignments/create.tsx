@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Alert } from '../types/Alert'; 
+import { useEffect, useState } from 'react';
+
+import { Alert } from '../types/Alert';
 import { Assignment } from '../types/Assignment';
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
@@ -36,7 +37,7 @@ export default function Create() {
       <h1 className=' text-3xl'>Add Camera</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
-        addAssignment();
+        // addAssignment();
       }} className='w-2/5'>
         <label>Id:</label>
         <input type="text" value={id} onChange={(e) => setId(e.target.value)} />

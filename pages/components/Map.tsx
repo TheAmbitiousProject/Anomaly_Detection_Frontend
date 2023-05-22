@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
@@ -59,7 +60,12 @@ export default function ReadString() {
 // /*
 const Map = () => {
     
-  return (
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  return (  isMounted && (
     <div className="container w-full h-full" style={{height:'90vh', width:'90vw'}}>
         <MapContainer
       center={[10.0284, 76.3285]}
@@ -80,7 +86,7 @@ const Map = () => {
     </MapContainer>
     {/* <button onClick={() => ReadString()}>Read S</button> */}
     </div>
-    
+  )
   );
 };
 

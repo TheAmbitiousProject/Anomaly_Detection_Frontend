@@ -6,7 +6,7 @@ import Create from "./create";
 import Navbar from "../components/Navbar";
 import { Responder } from '../types/Responder';
 import Select from 'react-select';
-import Update from "./update";
+// import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
 
@@ -139,9 +139,9 @@ async function fetchAnomaly(anomalyId: string) {
     );
   }
 
-  const options: { value: string; label: string }[] = responders.map((responder: { id: any; }) => ({
+  const options: { value: string; label: string }[] = responders.map((responder: { id: any , full_name: any}) => ({
     value: responder.id,
-    label: responder.full_name,
+    label: responder?.full_name || 'no name',
   }));
 
   async function sentAssignment(alertId: string){
@@ -196,12 +196,12 @@ async function fetchAnomaly(anomalyId: string) {
           <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* {console.log('alerts in return: ', alerts)} */}
-              {alerts.map((alert: { id: boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | Key | null | undefined; anomaly_id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; responder_id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | null | undefined; }) => (
+              {alerts.map((alert: { id: any; anomaly_id: any; responder_id: any; }) => (
                   <div
                       key={alert?.id}
                       className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
                   >
-                    {console.log("Hello from the other side")}
+                    
                       <h3 className="text-lg text-black font-semibold my-2">Alert ID: {alert.id}</h3>
                       {/* <p className="text-black">anomaly class: {alert.anomaly}</p> */}
                       <p className="text-black">anomaly ID: {alert.anomaly_id}</p>

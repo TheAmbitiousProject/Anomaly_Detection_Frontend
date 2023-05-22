@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Camera } from '../types/Camera'; 
+import { useEffect, useState } from 'react';
+
+import { Camera } from '../types/Camera';
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
 
 export default function Create() {
-  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [cameras, setCameras] = useState<any>([]);
   const [description, setDescription] = useState<string>('');
   const [longitude, setLongitude] = useState<number>();
   const [latitude, setLatitude] = useState<number>();
@@ -28,7 +29,7 @@ export default function Create() {
   async function addCamera() {
     const { data, error } = await supabase
       .from('cameras')
-      .insert({ id: id, camera_description: description, coordinates: {
+      .insert({ camera_description: description, coordinates: {
         lat: latitude,
         lng: longitude
       },

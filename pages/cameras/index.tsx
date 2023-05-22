@@ -9,7 +9,7 @@ import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
 
 export default function Cameras() {
-  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [cameras, setCameras] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [update, setUpdate] = useState(false);
@@ -20,7 +20,7 @@ export default function Cameras() {
       const fetchCameras = async () => {
         try {
           const { data: cameras, error } = await supabase
-            .from<Camera>("cameras")
+            .from("cameras")
             .select("*")
             .order('id', { ascending: true });
   
@@ -56,7 +56,7 @@ export default function Cameras() {
     const { error } = await supabase.from('cameras').delete().eq('id', id)
     if (error) console.log('error', error);
     else {
-      const updatedCameras = cameras.filter((camera) => camera.id !== id);
+      const updatedCameras = cameras.filter((camera: any) => camera.id !== id);
       setCameras(updatedCameras);
     }
   }
@@ -135,7 +135,7 @@ const { data: messages, realtimeError } = supabase.from('cameras')
               {(!create ) && 
                 <div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {cameras.map((camera) => (
+                    {cameras.map((camera: any) => (
                       <div
                           key={camera.id}
                           className="bg-white rounded-lg shadow-md p-4 cursor-pointer"

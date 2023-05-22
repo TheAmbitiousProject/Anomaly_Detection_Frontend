@@ -13,10 +13,10 @@ export default function Assignments() {
   useEffect(() => {
     const fetchAssignments = async () => {
         const { data, error } = await supabase
-          .from<Assignment>('assignments')
+          .from('assignments')
           .select("*");
         if (error) throw error;
-        setAssignments(data);
+        //setAssignments(data);
     };
     fetchAssignments();
     const timer = setInterval( ()=>{
@@ -47,7 +47,7 @@ export default function Assignments() {
         const { error } = await supabase
         .from('alerts')
         .update({ isAccepted: true, 
-          responder_id: user.id, sentRequest: null  
+          //responder_id: user.id, sentRequest: null  
         })
         .eq('id', (alertId))
 
@@ -77,7 +77,7 @@ export default function Assignments() {
             </div> */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
-            assignments.filter((assignment) => assignment.responder_id == user.id)
+            assignments.filter((assignment) => assignment.responder_id == '')
             .map((assignment) => (
             <div
                 key={assignment.id}

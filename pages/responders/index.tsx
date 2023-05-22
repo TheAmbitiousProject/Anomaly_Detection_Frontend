@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import Create from "./create";
+// import Create from "./create";
 import Navbar from "../components/Navbar";
 import { Responder } from '../types/Responder';
-import Update from "./update";
+//import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
 
@@ -11,7 +11,7 @@ import { timer_duration } from "@/constants";
 
 
 const Responders = () => {
-  const [responders, setResponders] = useState<Responder[]>([]);
+  const [responders, setResponders] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [update, setUpdate] = useState(false);
@@ -20,7 +20,7 @@ const Responders = () => {
     const fetchResponders = async () => {
       try {
         const { data: responders, error } = await supabase
-          .from<Responder>("profiles")
+          .from("profiles")
           .select("*");
 
         if (error) throw error;
@@ -53,7 +53,7 @@ const Responders = () => {
     const { error } = await supabase.from('profiles').delete().match({ id });
     if (error) console.log('error', error);
     else {
-      const updatedResponders = responders.filter((responder) => responder.id !== id);
+      const updatedResponders = responders.filter((responder: any) => responder.id !== id);
       setResponders(updatedResponders);
     }
   }
@@ -91,7 +91,7 @@ function handleUpdate() {
                 <p className="text-white">TO ADD A NEW RESPONDER: please create a new account with the corresponding details</p> 
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {responders.map((responder) => (
+            {responders.map((responder: any) => (
             <div
                 key={responder.id}
                 className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
@@ -108,7 +108,7 @@ function handleUpdate() {
                 <button onClick={() => {handleUpdate}
                 }>Update</button>
 
-                {update && <Update id={responder.id}/>}
+                {/* {update && <Update id={responder.id}/>} */}
                 </div>
                 
             </div>

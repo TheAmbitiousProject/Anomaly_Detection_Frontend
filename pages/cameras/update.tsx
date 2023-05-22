@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Camera } from '../types/Camera'; 
+import { useEffect, useState } from 'react';
+
+import { Camera } from '../types/Camera';
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
 
 export default function Update( oldId: any) {
-  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [cameras, setCameras] = useState<any>([]);
   const [id, setId] = useState<string>('');
   const [description, setDescription] = useState<string>();
   const [longitude, setLongitude] = useState<number>();
@@ -31,38 +32,38 @@ export default function Update( oldId: any) {
   }
 
   async function updateCamera(id: string, updates: Partial<Camera>) {
-    const { error } = await supabase
-        .from('cameras')
-        .update({ isAccepted: true, 
-          responder_id: user.id, sentRequest: null  
-        })
-        .eq('id', (alertId))
-    if (error) console.log('error', error);
-    else {
-      const updatedCameras = cameras.map((camera) =>
-        camera.id === data.id ? { ...camera, ...data } : camera
-      );
-      setCameras(updatedCameras);
-      handleGoBack()
-    }
+    // const { error } = await supabase
+    //     .from('cameras')
+    //     .update({ isAccepted: true, 
+    //       responder_id: id, sentRequest: null  
+    //     })
+    //     .eq('id', (alertId))
+    // if (error) console.log('error', error);
+    // else {
+    //   const updatedCameras = cameras.map((camera) =>
+    //     camera.id === data.id ? { ...camera, ...data } : camera
+    //   );
+    //   setCameras(updatedCameras);
+    //   handleGoBack()
+    // }
   }
 
-  async function deleteCamera(id: string) {
-    const { error } = await supabase.from('cameras').update().eq('id', id)
-    if (error) console.log('error', error);
-    else {
-      const updatedCameras = cameras.filter((camera) => camera.id !== id);
-      setCameras(updatedCameras);
-    }
-  }
-  {console.log('in update 22');}
+  // async function deleteCamera(id: string) {
+  //   const { error } = await supabase.from('cameras').update().eq('id', id)
+  //   if (error) console.log('error', error);
+  //   else {
+  //     const updatedCameras = cameras.filter((camera) => camera.id !== id);
+  //     setCameras(updatedCameras);
+  //   }
+  // }
+  // {console.log('in update 22');}
 
   return (
     <div className='flex flex-col justify-center items-center'>
       <h1 className=' text-3xl'>Update Camera</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
-        updateCamera();
+        //updateCamera();
       }} className='w-2/5'>
         <label>Id:</label>
         <input type="text" value={id} onChange={(e) => setId(e.target.value)} />

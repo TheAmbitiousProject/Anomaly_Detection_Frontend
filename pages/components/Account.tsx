@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
-import { useUser, useSupabaseClient, Session } from '@supabase/auth-helpers-react'
-import { Database } from '../../utils/database.types'
-type Profiles = Database['public']['Tables']['profiles']['Row']
+import { Session, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useEffect, useState } from 'react'
+
 import Avatar from './Avatar'
+import { Database } from '../../utils/database.types'
 import Navbar from './Navbar'
+type Profiles = Database['public']['Tables']['profiles']['Row']
 
 export default function Account({ session }: { session: Session }) {
   const supabase = useSupabaseClient<Database>()
@@ -83,7 +84,7 @@ export default function Account({ session }: { session: Session }) {
       </div>
       <div className="basis-3/5">
       <Avatar
-      uid={user.id}
+      uid={user?.id || ''}
       url={avatar_url}
       size={150}
       onUpload={(url) => {
