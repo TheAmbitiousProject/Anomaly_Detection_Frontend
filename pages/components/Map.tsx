@@ -3,8 +3,14 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
+import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { height, width } from "@mui/system";
+
+import { Alert } from '../types/Alert';
+import { Alerts } from "alerts/index.tsx";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 // import { usePapaParse } from 'react-papaparse';
 
@@ -61,11 +67,11 @@ export default function ReadString() {
 const Map = () => {
     
   const [isMounted, setIsMounted] = React.useState(false);
-
+  const [alerts, setAlerts] = useState<any>([]);
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
-  return (  isMounted && (
+  return (  isMounted ? (
     <div className="container w-full h-full" style={{height:'90vh', width:'90vw'}}>
         <MapContainer
       center={[10.0284, 76.3285]}
@@ -78,7 +84,15 @@ const Map = () => {
     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
   />
       <Marker position={[10.0431, 76.3243]} draggable={true}>
-        <Popup>Fire Anomaly</Popup>
+        <Popup>Fire Anomaly
+        {/* <div className="card" >
+          
+          {alerts.map((alert: { id: any; anomaly_id: any; responder_id: any; }) => (
+                  
+              ))}
+        
+        </div> */}
+        </Popup>
       </Marker>
       <Marker position={[10.0265, 76.3086]} draggable={true}>
         <Popup>Road Accident</Popup>
@@ -86,7 +100,7 @@ const Map = () => {
     </MapContainer>
     {/* <button onClick={() => ReadString()}>Read S</button> */}
     </div>
-  )
+  ):null
   );
 };
 

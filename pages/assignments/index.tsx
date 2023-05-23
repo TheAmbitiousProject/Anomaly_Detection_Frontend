@@ -77,7 +77,7 @@ export default function Assignments() {
             </div> */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
-            assignments.filter((assignment) => assignment.responder_id == '')
+            assignments.filter((assignment) => assignment.responder_id == '') //user.id instead of ''
             .map((assignment) => (
             <div
                 key={assignment.id}

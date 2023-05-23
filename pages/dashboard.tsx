@@ -1,4 +1,5 @@
 import Map from "./components/Map";
+import MapWithNoSSR from "./components/Map";
 import Navbar from "./components/Navbar"
 import dynamic from "next/dynamic";
 import { padding } from "@mui/system";
