@@ -1,7 +1,6 @@
-import { Marker, Popup, TileLayer } from "react-leaflet";
-import { height, width } from "@mui/system";
 import { useEffect, useState } from "react";
 
+import { toast } from "react-toastify";
 import React from "react";
 import Select from "react-select";
 import { supabase } from "@/utils/supabaseClient";
@@ -16,43 +15,24 @@ const AlertCard = ({
   responders: any;
 }) => {
   const [id, setId] = useState("");
-
   const [respondersObj, setRespondersObj] = useState<any>({});
   const [selectedResponder, setSelectedResponder] = useState<
     String | undefined | null
   >("");
 
-  async function sentAssignment(alertId: string) {
-    const { data, error } = await supabase
-      .from("assignments")
-      .select("*")
-      .eq("alert_id", alertId);
-    if (error) return true;
-    return false;
-  }
-
   async function addAssignment(responder: any, alertId: string, id: string) {
-    if (await sentAssignment(alertId)) {
-      alert(
-        "An unaccepted/undenied request has been already sent for this Alert!!"
-      );
-      setId("");
-      return null;
-    }
-
     const { data, error } = await supabase
-      .from("assignments")
-      .insert({
-        alert_id: alertId,
-        responder_id: responder,
-      })
-      .single();
+      .from("alerts")
+      .update({ responder_id: responder })
+      .eq("id", alertId);
+
     if (error) console.log("error", error);
     else {
       setId("");
       setSelectedResponder(null);
       console.log("assignment insert success");
-      alert("assignment insert success");
+      toast("success bro");
+      window.location.reload()
     }
   }
 
@@ -79,7 +59,6 @@ const AlertCard = ({
       <h3 className='text-lg text-black font-semibold my-2'>
         Alert ID: {alert.id}
       </h3>
-      {/* <p className="text-black">anomaly class: {alert.anomaly}</p> */}
       <p className='text-black'>anomaly ID: {alert.anomaly_id}</p>
       {alert.responder_id != null && (
         <>
