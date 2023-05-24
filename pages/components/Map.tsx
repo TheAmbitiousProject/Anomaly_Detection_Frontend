@@ -145,7 +145,6 @@ const Map = () => {
             <div>
                 <h3>Alert ID: {marker.id}</h3>
                 <p>Anomaly ID: {marker.anomaly_id}</p>
-                {/* Add other alert details */}
               </div>
             </Popup>
           </Marker>
