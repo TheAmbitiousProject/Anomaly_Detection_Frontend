@@ -5,7 +5,10 @@ import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from 'next/router';
 
 export default function Create() {
+  const [alertId, setAlertId] = useState<string>('');
   const [anomalyId, setAnomalyId] = useState<string>('');
+  const [latitude, setLatitude] = useState<string>('');
+  const [longitude, setLongitude] = useState<string>('');
   const [responderId, setResponderId] = useState<string|null>('');
   const router = useRouter();
   
@@ -13,19 +16,37 @@ export default function Create() {
     router.back();
   }
 
-  async function sentRequest(id: string){
-    const { data, error } = await supabase
-    //
-    .from('alerts')
-    .select("*")
-    .eq('anomaly_id', id);
-      if (error){
-        // throw error;
-        return false
-      } 
-      return true
+  // async function sentRequest(id: string){
+  //   const { data, error } = await supabase
+  //   //
+  //   .from('alerts')
+  //   .select("*")
+  //   .eq('id', id);
+  //     if (error){
+  //       // throw error;
+  //       return false
+  //     } 
+  //     return true
+  // }
+  async function sentRequest(id: string) {
+    try {
+      const { data, error } = await supabase
+        .from('alerts')
+        .select('*')
+        .eq('anomaly_id', id);
+      
+      if (error) {
+        console.error('Error fetching alerts:', error);
+        return false;
+      }
+      
+      return data.length > 0; // Check if any alerts were found for the given anomalyId
+    } catch (error) {
+      console.error('Error fetching alerts:', error);
+      return false;
+    }
   }
-
+  
 
   // async function addAlert() {
   //   if(await sentRequest(anomalyId)) alert('alert exists for this anomaly')
@@ -43,10 +64,9 @@ export default function Create() {
 
   async function addAlert() {
     try {
-      const alertExists = await sentRequest(anomalyId);
-    
+      const alertExists = await sentRequest(alertId)
       if (alertExists) {
-        alert('Alert exists for this anomaly');
+        alert('Alert already exists in this id');
         return; // Exit the function if alert already exists
       }
     
@@ -57,8 +77,12 @@ export default function Create() {
       const { data, error } = await supabase
         .from('alerts')
         .insert({ 
-          anomaly_id: anomalyId, 
-          responder_id: responderId
+          id: alertId, 
+          anomaly_id: anomalyId,
+          created_at: new Date().toISOString(),
+          responder_id: responderId,
+          latitude: latitude,
+          longitude: longitude
         })
         .single();
     
@@ -81,8 +105,14 @@ export default function Create() {
         e.preventDefault();
         addAlert();
       }} className='w-2/5'>
+        <label>Alert Id:</label>
+        <input type="text" value={alertId} onChange={(e) => setAlertId(e.target.value)} />        
         <label>Anomaly Id:</label>
-        <input type="text" value={anomalyId} onChange={(e) => setAnomalyId(e.target.value)} />         
+        <input type="text" value={anomalyId} onChange={(e) => setAnomalyId(e.target.value)} />  
+        <label>Latitude:</label>
+        <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} /> 
+        <label>Longitude:</label>
+        <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} /> 
         <label>Responder Id:</label>
         <input type="text" value={responderId||''} onChange={(e) => setResponderId(e.target.value)} />
         <button type="submit" className='m-5'>Add Alert</button>

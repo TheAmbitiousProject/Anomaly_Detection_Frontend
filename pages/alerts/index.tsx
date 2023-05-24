@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Alert } from "../types/Alert";
+import AlertCard from "../components/AlertCard";
 import { Assignment } from "../types/Assignment";
 import Create from "./create";
 import Navbar from "../components/Navbar";
@@ -9,7 +10,6 @@ import Select from "react-select";
 // import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
-import AlertCard from "../components/AlertCard";
 
 export default function Alerts() {
   //const [alerts, setAlerts] = useState<Alert[]>([]);
