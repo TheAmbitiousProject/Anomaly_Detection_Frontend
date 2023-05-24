@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { Marker, Popup, TileLayer } from "react-leaflet";
 import { height, width } from "@mui/system";
+import { useEffect, useState } from "react";
 
 import React from "react";
 import Select from "react-select";
@@ -105,7 +105,7 @@ const AlertCard = ({
         </div>
       )}
       <div className='flex m-2 w-4/5 justify-around'>
-        <button onClick={() => deleteAlert(alert.id)}>Delete</button>
+        <button onClick={() => deleteAlert(alert.id)}>Resolved</button>
         {alert.responder_id == null && (
           <button
             onClick={() => addAssignment(selectedResponder, alert.id, id)}
