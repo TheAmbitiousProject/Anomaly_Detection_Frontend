@@ -11,6 +11,9 @@ import { Alert } from '../types/Alert';
 import { Alerts } from "alerts/index.tsx";
 import React from 'react';
 import ReactDOM from 'react-dom';
+//import React, { useEffect, useState } from "react";
+//import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { supabase } from "../../utils/supabaseClient";
 
 // import { usePapaParse } from 'react-papaparse';
 
@@ -64,44 +67,96 @@ export default function ReadString() {
 }
 */
 // /*
-const Map = () => {
+//uncomment from this line for code of markers before fetch from alert table
+
+// const Map = () => {
     
-  const [isMounted, setIsMounted] = React.useState(false);
-  const [alerts, setAlerts] = useState<any>([]);
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  return (  isMounted ? (
-    <div className="container w-full h-full" style={{height:'90vh', width:'90vw'}}>
-        <MapContainer
-      center={[10.0284, 76.3285]}
-      zoom={14}
-      scrollWheelZoom={false}
-      style={{ height: "100%", width: "100%" }}
-    >
-      <TileLayer
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-  />
-      <Marker position={[10.0431, 76.3243]} draggable={true}>
-        <Popup>Fire Anomaly
-        {/* <div className="card" >
+//   const [isMounted, setIsMounted] = React.useState(false);
+//   const [alerts, setAlerts] = useState<any>([]);
+//   React.useEffect(() => {
+//     setIsMounted(true);
+//   }, []);
+//   return (  isMounted ? (
+//     <div className="container w-full h-full" style={{height:'90vh', width:'90vw'}}>
+//         <MapContainer
+//       center={[10.0284, 76.3285]}
+//       zoom={14}
+//       scrollWheelZoom={false}
+//       style={{ height: "100%", width: "100%" }}
+//     >
+//       <TileLayer
+//     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+//   />
+//       <Marker position={[10.0431, 76.3243]} draggable={true}>
+//         <Popup>Fire Anomaly
+//         {/* <div className="card" >
           
-          {alerts.map((alert: { id: any; anomaly_id: any; responder_id: any; }) => (
+//           {alerts.map((alert: { id: any; anomaly_id: any; responder_id: any; }) => (
                   
-              ))}
+//               ))}
         
-        </div> */}
-        </Popup>
-      </Marker>
-      <Marker position={[10.0265, 76.3086]} draggable={true}>
-        <Popup>Road Accident</Popup>
-      </Marker>
-    </MapContainer>
-    {/* <button onClick={() => ReadString()}>Read S</button> */}
+//         </div> */}
+//         </Popup>
+//       </Marker>
+//       <Marker position={[10.0265, 76.3086]} draggable={true}>
+//         <Popup>Road Accident</Popup>
+//       </Marker>
+//     </MapContainer>
+//     {/* <button onClick={() => ReadString()}>Read S</button> */}
+//     </div>
+//   ):null
+//   );
+// };
+
+const Map = () => {
+  const [markers, setMarkers] = useState([]);
+
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        const { data, error } = await supabase.from("alerts").select("*");
+        if (error) throw error;
+        setMarkers(data);
+      } catch (error) {
+        console.error("Error fetching markers:", error);
+      }
+    };
+
+    fetchMarkers();
+  }, []);
+
+  return (
+    <div className="container w-full h-full" style={{ height: "90vh", width: "90vw" }}>
+      <MapContainer
+        center={[10.0284, 76.3285]}
+        zoom={14}
+        scrollWheelZoom={false}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+        />
+
+        {markers.map((marker) => (
+          <Marker key={marker.id} position={[marker.latitude, marker.longitude]}>
+            <Popup>
+            <div>
+                <h3>Alert ID: {marker.id}</h3>
+                <p>Anomaly ID: {marker.anomaly_id}</p>
+                {/* Add other alert details */}
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
     </div>
-  ):null
   );
 };
 
 export default Map;
+
+
+
+

@@ -239,6 +239,7 @@ async function fetchAnomaly(anomalyId: string) {
       </div>
     </div>
   );
+
 };
 
 // */

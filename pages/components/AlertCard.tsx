@@ -1,13 +1,13 @@
-// import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from "react";
-// import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-// import { height, width } from "@mui/system";
+import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { height, width } from "@mui/system";
 
-// import { Alert } from '../types/Alert';
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import { Select } from "@mui/material";
+import { Alert } from '../types/Alert';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Select } from "@mui/material";
 
-// //const [alerts, setAlerts] = useState<any>([]);
+//const [alerts, setAlerts] = useState<any>([]);
 
 // const AlertCard = ({alert, deleteAlert,setSelectedResponder, addAssignment, options , responders}:{alert:any, deleteAlert:any,setSelectedResponder:any, addAssignment:any, options:any , responders:any}) =>{
 
@@ -53,4 +53,5 @@
 // }
 
 // export default AlertCard
+
 

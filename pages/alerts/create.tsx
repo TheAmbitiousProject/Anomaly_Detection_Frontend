@@ -27,19 +27,52 @@ export default function Create() {
   }
 
 
+  // async function addAlert() {
+  //   if(await sentRequest(anomalyId)) alert('alert exists for this anomaly')
+  //   if(!responderId) setResponderId(null)
+  //   const { data, error } = await supabase
+  //     .from('alerts')
+  //     .insert({ 
+  //       anomaly_id: anomalyId, 
+  //       responder_id: responderId
+  //     })
+  //     .single();
+  //   if (error) console.log('error', error);
+  //   else handleGoBack();
+  // }
+
   async function addAlert() {
-    if(await sentRequest(anomalyId)) alert('alert exists for this anomaly')
-    if(!responderId) setResponderId(null)
-    const { data, error } = await supabase
-      .from('alerts')
-      .insert({ 
-        anomaly_id: anomalyId, 
-        responder_id: responderId
-      })
-      .single();
-    if (error) console.log('error', error);
-    else handleGoBack();
+    try {
+      const alertExists = await sentRequest(anomalyId);
+    
+      if (alertExists) {
+        alert('Alert exists for this anomaly');
+        return; // Exit the function if alert already exists
+      }
+    
+      if (!responderId) {
+        setResponderId(null);
+      }
+    
+      const { data, error } = await supabase
+        .from('alerts')
+        .insert({ 
+          anomaly_id: anomalyId, 
+          responder_id: responderId
+        })
+        .single();
+    
+      if (error) {
+        console.log('Error:', error);
+      } else {
+        handleGoBack();
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   }
+  
+  
 
   return (
     <div className='flex flex-col justify-center items-center'>
