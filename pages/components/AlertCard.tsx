@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { toast } from "react-toastify";
 import React from "react";
 import Select from "react-select";
 import { supabase } from "@/utils/supabaseClient";
+import { toast } from "react-toastify";
 
 const AlertCard = ({
   alert,
@@ -19,6 +19,7 @@ const AlertCard = ({
   const [selectedResponder, setSelectedResponder] = useState<
     String | undefined | null
   >("");
+  const [cameraDescription, setCameraDescription] = useState("");
 
   async function addAssignment(responder: any, alertId: string, id: string) {
     const { data, error } = await supabase
@@ -32,7 +33,7 @@ const AlertCard = ({
       setSelectedResponder(null);
       console.log("assignment insert success");
       toast("success bro");
-      window.location.reload()
+      window.location.reload();
     }
   }
 
@@ -51,24 +52,46 @@ const AlertCard = ({
     setRespondersObj(respObj);
   }, [responders]);
 
+  useEffect(() => {
+    const fetchCameraDescription = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("cameras")
+          .select("camera_description")
+          .eq("id", alert.camera_id);
+
+        if (error) throw error;
+
+        if (data.length > 0) {
+          setCameraDescription(data[0].camera_description);
+        }
+      } catch (error) {
+        console.error("Error fetching camera description:", error);
+      }
+    };
+
+    fetchCameraDescription();
+  }, [alert.camera_id]);
+
   return (
     <div
       key={alert?.id}
-      className='bg-white rounded-lg shadow-md p-4 cursor-pointer'
+      className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
     >
-      <h3 className='text-lg text-black font-semibold my-2'>
+      <h3 className="text-lg text-black font-semibold my-2">
         Alert ID: {alert.id}
       </h3>
-      <p className='text-black'>anomaly ID: {alert.anomaly_id}</p>
+      <p className="text-black">Anomaly ID: {alert.anomaly_id}</p>
+      <p className="text-black">Location: {cameraDescription}</p>
       {alert.responder_id != null && (
         <>
-          <p className='text-black'>responder ID: {alert.responder_id}</p>
+          <p className="text-black">Responder ID: {alert.responder_id}</p>
         </>
       )}
       {alert.responder_id == null && (
-        <div className='m-2 flex flex-col justify-around'>
+        <div className="m-2 flex flex-col justify-around">
           <Select
-            id='Responder-select'
+            id="Responder-select"
             options={options}
             onChange={(option) => {
               const responder =
@@ -78,12 +101,13 @@ const AlertCard = ({
                 ) ?? undefined;
               setSelectedResponder(responder?.id);
             }}
-            placeholder='Select a Responder: '
-            className='text-black'
+            placeholder="Select a Responder:"
+            className="text-black"
           />
         </div>
       )}
-      <div className='flex m-2 w-4/5 justify-around'>
+      
+      <div className="flex m-2 w-4/5 justify-around">
         <button onClick={() => deleteAlert(alert.id)}>Resolved</button>
         {alert.responder_id == null && (
           <button
@@ -95,6 +119,7 @@ const AlertCard = ({
       </div>
     </div>
   );
+  
 };
 
 export default AlertCard;

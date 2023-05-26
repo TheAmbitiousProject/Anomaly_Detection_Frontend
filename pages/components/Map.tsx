@@ -115,8 +115,8 @@ const Map = () => {
               <Marker key={alert.id} position={[latitude, longitude]} icon={markerIcon}>
                 <Popup>
                   <div>
-                    <h3>Alert ID: {alert.id}</h3>
-                    <p>Anomaly ID: {alert.anomaly_id}</p>
+                    {/* <h3>Alert ID: {alert.id}</h3>
+                    <p>Camera ID: {alert.camera_id}</p> */}
                     <AlertCard responders={responders} alert={alert} deleteAlert={deleteAlert} />
                   </div>
                 </Popup>
