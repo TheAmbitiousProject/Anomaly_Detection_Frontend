@@ -3,33 +3,46 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
-import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useEffect, useState } from "react";
+
+import AlertCard from "./AlertCard";
 import React from "react";
 import { supabase } from "../../utils/supabaseClient";
-import AlertCard from "./AlertCard";
 
 const Map = () => {
   const [alerts, setAlerts] = useState([]);
   const [responders, setResponders] = useState([]);
+  const [cameras, setCameras] = useState([]);
 
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
-        const { data, error } = await supabase.from("alerts").select("*");
-        if (error) throw error;
-        setAlerts(data);
+        const { data: alertsData, error: alertsError } = await supabase
+          .from("alerts")
+          .select("*");
+
+        const { data: camerasData, error: camerasError } = await supabase
+          .from("cameras")
+          .select("*");
+
+        if (alertsError) throw alertsError;
+        if (camerasError) throw camerasError;
+
+        setAlerts(alertsData);
+        setCameras(camerasData);
       } catch (error) {
         console.error("Error fetching markers:", error);
       }
     };
+
     const fetchResponders = async () => {
       try {
         const { data, error } = await supabase.from("profiles").select("*");
         if (error) throw error;
         setResponders(data);
-      } catch (error: any) {
-        console.log(error);
+      } catch (error) {
+        console.error("Error fetching responders:", error);
       }
     };
 
@@ -38,19 +51,22 @@ const Map = () => {
   }, []);
 
   async function deleteAlert(id: string) {
-    const { error } = await supabase.from("alerts").delete().match({ id });
-    if (error) console.log("error", error);
-    else {
-      const updatedalerts = alerts.filter(
+    try {
+      const { error } = await supabase.from("alerts").delete().match({ id });
+      if (error) throw error;
+
+      const updatedAlerts = alerts.filter(
         (alert: { id: string }) => alert.id !== id
       );
-      setAlerts(updatedalerts);
+      setAlerts(updatedAlerts);
+    } catch (error) {
+      console.log("Error deleting alert:", error);
     }
   }
 
   return (
     <div
-      className='container w-full h-full'
+      className="container w-full h-full"
       style={{ height: "90vh", width: "90vw" }}
     >
       <MapContainer
@@ -60,29 +76,40 @@ const Map = () => {
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {alerts.map((alert, index) => (
-          <Marker key={alert.id} position={[alert.latitude, alert.longitude]}>
-            <Popup>
-              <div>
-                <h3>Alert ID: {alert.id}</h3>
-                <p>Anomaly ID: {alert.anomaly_id}</p>
-                <AlertCard
-                  key={index}
-                  responders={responders}
-                  alert={alert}
-                  deleteAlert={deleteAlert}
-                />
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+        {alerts.map((alert) => {
+          const associatedCamera = cameras.find(
+            (camera) => camera.id === alert.camera_id
+          );
+
+          if (associatedCamera) {
+            const { latitude, longitude } = associatedCamera;
+            return (
+              <Marker key={alert.id} position={[latitude, longitude]}>
+                <Popup>
+                  <div>
+                    <h3>Alert ID: {alert.id}</h3>
+                    <p>Anomaly ID: {alert.anomaly_id}</p>
+                    <AlertCard
+                      responders={responders}
+                      alert={alert}
+                      deleteAlert={deleteAlert}
+                    />
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          }
+
+          return null;
+        })}
+</MapContainer>
     </div>
   );
 };
 
 export default Map;
+ 

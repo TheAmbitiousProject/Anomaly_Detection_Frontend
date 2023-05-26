@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 export default function Create() {
   const [alertId, setAlertId] = useState<string>('');
   const [anomalyId, setAnomalyId] = useState<string>('');
-  const [latitude, setLatitude] = useState<string>('');
-  const [longitude, setLongitude] = useState<string>('');
+  //const [latitude, setLatitude] = useState<string>('');
+  //const [longitude, setLongitude] = useState<string>('');
+  const [cameraId, setCameraId] = useState<string>('');
   const [responderId, setResponderId] = useState<string|null>('');
   const router = useRouter();
   
@@ -33,7 +34,7 @@ export default function Create() {
       const { data, error } = await supabase
         .from('alerts')
         .select('*')
-        .eq('anomaly_id', id);
+        .eq('id', id);
       
       if (error) {
         console.error('Error fetching alerts:', error);
@@ -46,6 +47,33 @@ export default function Create() {
       return false;
     }
   }
+
+  // async function fetchCameraCoordinates(cameraId: string) {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from('cameras')
+  //       .select('latitude, longitude')
+  //       .eq('id', cameraId); // Filter by the provided cameraId
+      
+  //     if (error) {
+  //       console.error('Error fetching camera coordinates:', error);
+  //       return { latitude: null, longitude: null }; // Return default values if an error occurs
+  //     }
+      
+  //     if (data.length > 0) {
+  //       const { latitude, longitude } = data[0];
+  //       return { latitude, longitude };
+  //     }
+      
+  //     return { latitude: null, longitude: null }; // Return default values if no data is found
+  //   } catch (error) {
+  //     console.error('Error fetching camera coordinates:', error);
+  //     return { latitude: null, longitude: null }; // Return default values if an error occurs
+  //   }
+  // }
+  
+  
+  
   
 
   // async function addAlert() {
@@ -69,11 +97,12 @@ export default function Create() {
         alert('Alert already exists in this id');
         return; // Exit the function if alert already exists
       }
-    
+      
       if (!responderId) {
         setResponderId(null);
       }
-    
+      //const { latitude, longitude } = await fetchCameraCoordinates(cameraId)
+
       const { data, error } = await supabase
         .from('alerts')
         .insert({ 
@@ -81,11 +110,12 @@ export default function Create() {
           anomaly_id: anomalyId,
           created_at: new Date().toISOString(),
           responder_id: responderId,
-          latitude: latitude,
-          longitude: longitude
+          camera_id: cameraId,
+          //latitude: latitude,
+          //longitude: longitude
         })
         .single();
-    
+
       if (error) {
         console.log('Error:', error);
       } else {
@@ -94,6 +124,10 @@ export default function Create() {
     } catch (error) {
       console.log('Error:', error);
     }
+
+    
+      
+      
   }
   
   
@@ -109,10 +143,10 @@ export default function Create() {
         <input type="text" value={alertId} onChange={(e) => setAlertId(e.target.value)} />        
         <label>Anomaly Id:</label>
         <input type="text" value={anomalyId} onChange={(e) => setAnomalyId(e.target.value)} />  
-        <label>Latitude:</label>
-        <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} /> 
-        <label>Longitude:</label>
-        <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} /> 
+        <label>Camera Id:</label>
+        <input type="text" value={cameraId} onChange={(e) => setCameraId(e.target.value)} /> 
+        {/* <label>Longitude:</label>
+        <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} />  */}
         <label>Responder Id:</label>
         <input type="text" value={responderId||''} onChange={(e) => setResponderId(e.target.value)} />
         <button type="submit" className='m-5'>Add Alert</button>

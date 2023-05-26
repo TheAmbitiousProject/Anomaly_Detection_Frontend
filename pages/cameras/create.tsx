@@ -33,7 +33,7 @@ export default function Create() {
         lat: latitude,
         lng: longitude
       },
-    frame_rate: framerate })
+    frame_rate: framerate, latitude: latitude, longitude: longitude })
       .single();
     if (error) console.log('error', error);
     else handleGoBack();
