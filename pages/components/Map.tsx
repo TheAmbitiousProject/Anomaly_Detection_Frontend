@@ -64,52 +64,73 @@ const Map = () => {
     }
   }
 
+  const getMarkerIcon = (anomalyId) => {
+    let iconColor = "blue";
+  
+    switch (anomalyId) {
+      case 1:
+        iconColor = "blue";
+        break;
+      case 2:
+        iconColor = "red";
+        break;
+      case 3:
+        iconColor = "violet";
+        break;
+      case 4:
+        iconColor = "yellow";
+        break;
+      default:
+        iconColor = "green";
+    }
+  
+    return L.icon({
+      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${iconColor}.png`,
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+  };
+  
+
+  
   return (
-    <div
-      className="container w-full h-full"
-      style={{ height: "90vh", width: "90vw" }}
-    >
-      <MapContainer
-        center={[10.0284, 76.3285]}
-        zoom={14}
-        scrollWheelZoom={false}
-        style={{ height: "100%", width: "100%" }}
-      >
+    <div className="container w-full h-full" style={{ height: "90vh", width: "90vw" }}>
+      <MapContainer center={[10.0284, 76.3285]} zoom={14} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-
+  
         {alerts.map((alert) => {
-          const associatedCamera = cameras.find(
-            (camera) => camera.id === alert.camera_id
-          );
-
+          const associatedCamera = cameras.find((camera) => camera.id === alert.camera_id);
+  
           if (associatedCamera) {
             const { latitude, longitude } = associatedCamera;
+            const markerIcon = getMarkerIcon(alert.anomaly_id);
+  
             return (
-              <Marker key={alert.id} position={[latitude, longitude]}>
+              <Marker key={alert.id} position={[latitude, longitude]} icon={markerIcon}>
                 <Popup>
                   <div>
                     <h3>Alert ID: {alert.id}</h3>
                     <p>Anomaly ID: {alert.anomaly_id}</p>
-                    <AlertCard
-                      responders={responders}
-                      alert={alert}
-                      deleteAlert={deleteAlert}
-                    />
+                    <AlertCard responders={responders} alert={alert} deleteAlert={deleteAlert} />
                   </div>
                 </Popup>
               </Marker>
             );
           }
-
+  
           return null;
         })}
-</MapContainer>
+      </MapContainer>
     </div>
   );
-};
+};  
+
 
 export default Map;
  
