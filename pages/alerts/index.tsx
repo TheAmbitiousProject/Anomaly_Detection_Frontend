@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { Alert } from "../types/Alert";
 import AlertCard from "../components/AlertCard";
 import { Assignment } from "../types/Assignment";
 import Create from "./create";
 import Navbar from "../components/Navbar";
-import { Responder } from "../types/Responder";
-import Select from "react-select";
 // import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
@@ -62,7 +59,7 @@ export default function Alerts() {
     };
     // }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); //commented to prevent multiple re-rendering aka autoupdate of page with new info from db
+  }, []); 
 
   if (loading) {
     return <p>Loading...</p>;

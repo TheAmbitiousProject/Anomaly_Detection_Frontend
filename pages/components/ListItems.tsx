@@ -30,14 +30,14 @@ export const mainListItems = (
       </ListItemButton>
     </Link>
 
-    <Link href='./assignments' underline='none' color='#334155'>
+    {/* <Link href='./assignments' underline='none' color='#334155'>
       <ListItemButton>
         <ListItemIcon>
           <AssignmentIcon/>
         </ListItemIcon>
         <ListItemText className='text-#334155' primary="Assignments" />
       </ListItemButton>
-    </Link>
+    </Link> */}
 
     <Link href='./cameras' underline='none' color='#334155'>
       <ListItemButton>
@@ -77,6 +77,7 @@ export const mainListItems = (
   </React.Fragment>
 );
 
+/*
 export const secondaryListItems = (
   <React.Fragment>
     <ListSubheader component="div" inset>
@@ -103,3 +104,4 @@ export const secondaryListItems = (
   </React.Fragment>
   // </Router>
 );
+*/
