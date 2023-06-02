@@ -89,6 +89,7 @@ function handleUpdate() {
         <div className="basis-4/5 p-10">
             <div className="topbar h-15 m-5">
                 <p className="text-white">TO ADD A NEW RESPONDER: please create a new account with the corresponding details</p> 
+                {/* <p className="text-white">Update a responder cannot</p> */}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {responders.map((responder: any) => (
@@ -105,8 +106,8 @@ function handleUpdate() {
               
                 <div className="flex m-2 w-4/5 justify-around">
                 <button onClick={() => deleteCamera(responder.id)}>Delete</button>
-                <button onClick={() => {handleUpdate}
-                }>Update</button>
+                {/* <button onClick={() => {handleUpdate} */}
+                {/* }>Update</button> */}
 
                 {/* {update && <Update id={responder.id}/>} */}
                 </div>

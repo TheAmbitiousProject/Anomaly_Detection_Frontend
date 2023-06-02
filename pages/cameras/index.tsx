@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-
-import { Camera } from '../types/Camera';
 import Create from "./create";
 import Navbar from "../components/Navbar";
 import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { timer_duration } from "@/constants";
+import ProtectedRouting from "../components/ProtectedRouting";
+import { useUser } from "@supabase/auth-helpers-react";
 
 export default function Cameras() {
   const [cameras, setCameras] = useState<any>([]);
@@ -14,6 +14,14 @@ export default function Cameras() {
   const [error, setError] = useState("");
   const [update, setUpdate] = useState(false);
   const [create, setCreate] = useState(false);
+  const router = useRouter()
+  const [isUser, setIsUser] = useState(false)
+
+  const user=useUser()
+  // if(!user){
+  //   // router.push('/')
+  //   router.push('/alerts')
+  // }
  
   useEffect(() => {
     // setInterval(async () => {
@@ -39,13 +47,9 @@ export default function Cameras() {
         fetchCameras();
       },timer_duration)
   
-      
-  
       return ()=>{
         clearInterval(timer)
       }
-      
-  
       
       console.log(cameras) 
     // }, 3000);
@@ -114,25 +118,37 @@ const { data: messages, realtimeError } = supabase.from('cameras')
 */
 
   function handleUpdate(cameraId: string){
-    console.log('in update');
-    <Update id={cameraId}/>
-    {console.log('in update 20');}
+    // console.log('in update');
+    // setUpdate(true)
+    // router.push('/cameras/update');
+    router.push({
+      pathname: 'cameras/update',
+      query: { myArgument: cameraId }
+    });
+    // <Update id={cameraId}/>
+    // {console.log('in update 20');}
+  }
+
+  function handleCreate(){
+    router.push('/cameras/create');
+  }
+
+  function handleProtectedRouting(){
+
   }
 
   return (
     <div className="h-screen w-screeen flex justify-center">
+      <div>
+      
+      </div>
         <div className="basis-1/5">
             <Navbar/>
         </div>
         <div className="basis-4/5 p-10">
-            {(!create ) && 
-              <button className="topbar h-15 m-5" onClick={() => {
-                console.log('to create')
-                  setCreate(true)
-              }}>Add Camera</button>
-            }
-                {create && <Create/>}
-              {(!create ) && 
+              <button className="topbar h-15 m-5" onClick={() => 
+                  handleCreate()
+              }>Add Camera</button>
                 <div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cameras.map((camera: any) => (
@@ -146,7 +162,12 @@ const { data: messages, realtimeError } = supabase.from('cameras')
                           <p className="text-black">Frame Rate: {camera.frame_rate}</p>
                           <div className="flex m-2 w-4/5 justify-around">
                             <button onClick={() => deleteCamera(camera.id)}>Delete</button>
-                            <button onClick={() => {handleUpdate(camera.id)}
+                            
+                            <button onClick={() => {
+                              handleUpdate(camera.id)
+                              // <Update id={camera.id}/>
+                              // <Map/>
+                            }
                             }>Update</button>
 
                             {/* {update && } */}
@@ -156,7 +177,6 @@ const { data: messages, realtimeError } = supabase.from('cameras')
                     ))}
                   </div>
                 </div>
-              }  
         </div>
     </div>
   );

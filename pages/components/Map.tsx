@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import AlertCard from "./AlertCard";
 import React from "react";
 import { supabase } from "../../utils/supabaseClient";
+import { timer_duration } from "@/constants";
 
 const Map = () => {
   const [alerts, setAlerts] = useState([]);
@@ -48,6 +49,15 @@ const Map = () => {
 
     fetchMarkers();
     fetchResponders();
+    const timer = setInterval(() => {
+      console.log(`this runs every ${timer_duration} sec`);
+      fetchMarkers();
+      fetchResponders();
+    }, timer_duration);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   async function deleteAlert(id: string) {

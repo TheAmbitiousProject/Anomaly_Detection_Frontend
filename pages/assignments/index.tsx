@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactFragment, useEffect, useState } from 'react';
 
 import { Assignment } from '../types/Assignment';
 import Navbar from '../components/Navbar';
@@ -7,7 +7,7 @@ import { timer_duration } from "@/constants";
 import { useUser } from '@supabase/auth-helpers-react';
 
 export default function Assignments() {
-  const [assignments, setAssignments] = useState< Assignment[]>([]);
+  const [assignments, setAssignments] = useState<any>([]);
   const user = useUser()
 
   useEffect(() => {
@@ -16,15 +16,15 @@ export default function Assignments() {
           .from('assignments')
           .select("*");
         if (error) throw error;
-        //setAssignments(data);
+        setAssignments(data);
+        console.log(data)
     };
     fetchAssignments();
+    
     const timer = setInterval( ()=>{
       console.log(`this runs every ${timer_duration} sec`)
       fetchAssignments();
     },timer_duration)
-
-    
 
     return ()=>{
       clearInterval(timer)
@@ -77,8 +77,8 @@ export default function Assignments() {
             </div> */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
-            assignments.filter((assignment) => assignment.responder_id == '') //user.id instead of ''
-            .map((assignment) => (
+            assignments.filter((assignment: { responder_id: string; }) => assignment.responder_id == '') //user.id instead of ''
+            .map((assignment: { id: boolean | Key | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | null | undefined; alert_id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | null | undefined; }) => (
             <div
                 key={assignment.id}
                 className="bg-white rounded-lg shadow-md p-4 cursor-pointer"

@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 // import Update from "./update";
 import { supabase } from "../../utils/supabaseClient";
 import { timer_duration } from "@/constants";
+import { useRouter } from 'next/router';
 
 export default function Alerts() {
   //const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -15,10 +16,9 @@ export default function Alerts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [create, setCreate] = useState(false);
-  const [update, setUpdate] = useState(false);
   const [responders, setResponders] = useState<any>([]);
+  const router = useRouter()
  
-  const [initialRunState, setinitialRunState] = useState();
 
   useEffect(() => {
     console.log("alerts in useEffect: ", alerts);
@@ -44,7 +44,7 @@ export default function Alerts() {
       } catch (error: any) {
         console.log(error);
       }
-    };
+    };  
     fetchAlerts();
     fetchResponders();
     
@@ -75,6 +75,7 @@ export default function Alerts() {
   }
 
 
+  /*
   async function deleteAlert(id: string) {
     const { error } = await supabase.from("alerts").delete().match({ id });
     if (error) console.log("error", error);
@@ -85,7 +86,16 @@ export default function Alerts() {
       setAlerts(updatedalerts);
     }
   }
+  */
 
+  async function resolveAlert(id: string) {
+    const { error } = await supabase.from("alerts").update({ resolved: true }).eq('id', id);;
+    if (error) console.log("error", error);
+    }
+  
+  function handleCreate(){
+    router.push('/alerts/create');
+  }
 
   return (
     <div className='h-screen w-screeen flex justify-center'>
@@ -98,22 +108,21 @@ export default function Alerts() {
             className='topbar h-15 m-5'
             onClick={() => {
               console.log("to create");
-              setCreate(true);
+              handleCreate()
             }}
           >
             Add Alert
           </button>
         )}
-        {create && <Create />}
-        {!create && (
           <div>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-              {alerts.map((alert:any,index:number) => (
-                <AlertCard key={index} responders={responders} alert={alert} deleteAlert={deleteAlert} />
+              {/* {alerts.map((alert:any,index:number) => ( */}
+              {alerts.filter((alert: { resolved: any; }) => alert.resolved == false)
+              .map((alert:any,index:number) => (
+                <AlertCard key={index} responders={responders} alert={alert} resolveAlert={resolveAlert} />
               ))}
             </div>
           </div>
-        )}
       </div>
     </div>
   );

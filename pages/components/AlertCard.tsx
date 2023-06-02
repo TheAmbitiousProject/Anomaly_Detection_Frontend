@@ -8,10 +8,10 @@ import { toast } from "react-toastify";
 const AlertCard = ({
   alert,
   responders,
-  deleteAlert,
+  resolveAlert,
 }: {
   alert: any;
-  deleteAlert: any;
+  resolveAlert: any;
   responders: any;
 }) => {
   const [id, setId] = useState("");
@@ -20,6 +20,8 @@ const AlertCard = ({
     String | undefined | null
   >("");
   const [cameraDescription, setCameraDescription] = useState("");
+  const [anomalyClass, setAnomalyClass] = useState("");
+  const [responder, setResponder] = useState("");
 
   async function addAssignment(responder: any, alertId: string, id: string) {
     const { data, error } = await supabase
@@ -27,12 +29,18 @@ const AlertCard = ({
       .update({ responder_id: responder })
       .eq("id", alertId);
 
+      // const { data, error } = await supabase
+      // .from("assignments")
+      // .insert({ responder_id: responder,
+      // alert_id: alertId })
+      
+
     if (error) console.log("error", error);
     else {
       setId("");
       setSelectedResponder(null);
       console.log("assignment insert success");
-      toast("success bro");
+      toast("successful assignment insert");
       window.location.reload();
     }
   }
@@ -70,7 +78,43 @@ const AlertCard = ({
       }
     };
 
+    const fetchAnomaly = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("anomalies")
+          .select("class")
+          .eq("id", alert.anomaly_id);
+
+        if (error) throw error;
+        console.log(data)
+        if (data.length > 0) {
+          setAnomalyClass(data[0].class);
+        }
+      } catch (error) {
+        console.error("Error fetching camera description:", error);
+      }
+    };
+
+    const fetchResponder = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", alert.responder_id);
+
+        if (error) throw error;
+        console.log(data)
+        if (data.length > 0) {
+          setResponder(data[0].username);
+        }
+      } catch (error) {
+        console.error("Error fetching camera description:", error);
+      }
+    };
+
     fetchCameraDescription();
+    fetchAnomaly();
+    fetchResponder();
   }, [alert.camera_id]);
 
   return (
@@ -81,11 +125,11 @@ const AlertCard = ({
       <h3 className="text-lg text-black font-semibold my-2">
         Alert ID: {alert.id}
       </h3>
-      <p className="text-black">Anomaly ID: {alert.anomaly_id}</p>
+      <p className="text-black">Anomaly Class: {anomalyClass}</p>
       <p className="text-black">Location: {cameraDescription}</p>
       {alert.responder_id != null && (
         <>
-          <p className="text-black">Responder ID: {alert.responder_id}</p>
+          <p className="text-black">Responder ID: {responder}</p>
         </>
       )}
       {alert.responder_id == null && (
@@ -108,7 +152,7 @@ const AlertCard = ({
       )}
       
       <div className="flex m-2 w-4/5 justify-around">
-        <button onClick={() => deleteAlert(alert.id)}>Resolved</button>
+        <button onClick={() => resolveAlert(alert.id)}>Resolved</button>
         {alert.responder_id == null && (
           <button
             onClick={() => addAssignment(selectedResponder, alert.id, id)}

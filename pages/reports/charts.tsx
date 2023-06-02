@@ -4,18 +4,20 @@ import LineChart from '../components/LineChart';
 export default function Charts({anomalies, alerts}){
         const [labelsClass] = useState(['Fire/Explosion', 'Commotion/Group', 'Robbery/Assault', 'Vehicle Accident']);
         const [labelsYear] = useState([0, 2021, 2022, 2023])
-        const [counts, setCounts] = useState<any>([0,0,0,0])
+        const [counts, setCounts] = useState<any>()
         const [data, setData] = useState<any>([])
         
         function classAnomaly(){
             setCounts([0,0,0,0])
+            const countIn = [0,0,0,0]
              
             alerts.forEach((alert: any) => {
                 const anomalyId = alert.anomaly_id
-                counts[anomalyId-1] += 1;
+                countIn[anomalyId-1] += 1;
                 }
             );
-            setCounts(counts)
+            setCounts(countIn)
+            console.log('countIn ', countIn)
             console.log('data, label in classAnomaly: ', counts, labelsClass)
         }        
 
